@@ -12,7 +12,6 @@ phases:
       - export GOPATH=$HOME/go
       #- export PATH="${HOME}/go/bin:$PATH"
       - echo "export GIT_TERMINAL_PROMPT=1" >> ~/.bashrc || ~/.zshrc 
-      - go get -u github.com/golang/lint/golint <<< $'3d1dcc7fe89c7bd945de32cd426da08ea9eb0016'
       - go get -u github.com/stretchr/testify
       - go get -u github.com/golang/mock/gomock
       - go get -u github.com/golang/mock/mockgen
