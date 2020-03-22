@@ -11,11 +11,6 @@ phases:
       - export PATH=$PATH:/usr/local/go/bin
       - export GOPATH=$HOME/go
       #- export PATH="${HOME}/go/bin:$PATH"
-      - export GOPRIVATE=github.com/golangetest/*
-      #- git config --global --add url."git@github.com:".insteadOf "https://github.com/"
-      - git config --global http.extraheader "PRIVATE-TOKEN:3d1dcc7fe89c7bd945de32cd426da08ea9eb0016"
-      - git config --global user.name "tejasghadi"
-      - git config --global user.email "tejas.ghadi1990@gmail.com"
       - echo "export GIT_TERMINAL_PROMPT=1" >> ~/.bashrc || ~/.zshrc 
       - go get -u github.com/golang/lint/golint <<< $'3d1dcc7fe89c7bd945de32cd426da08ea9eb0016'
       - go get -u github.com/stretchr/testify
