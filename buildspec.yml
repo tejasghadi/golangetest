@@ -1,0 +1,63 @@
+version: 0.1
+            
+phases:
+
+  install: 
+    commands:
+    #install commands to execute golang tests
+      - cd /usr/local/
+      - wget https://dl.google.com/go/go1.13.4.linux-amd64.tar.gz
+      - tar -xzf go1.13.4.linux-amd64.tar.gz
+      - export PATH=$PATH:/usr/local/go/bin
+      - export GOPATH=$HOME/go
+      #- export PATH="${HOME}/go/bin:$PATH"
+      - export GOPRIVATE=github.com/idbydna/*
+      #- git config --global --add url."git@github.com:".insteadOf "https://github.com/"
+      - git config --global http.extraheader "PRIVATE-TOKEN:3d1dcc7fe89c7bd945de32cd426da08ea9eb0016"
+      - git config --global user.name "servicebridge"
+      - git config --global user.email "aws@idbydna.com"
+      - echo "export GIT_TERMINAL_PROMPT=1" >> ~/.bashrc || ~/.zshrc 
+      - go get -u github.com/golang/lint/golint <<< $'3d1dcc7fe89c7bd945de32cd426da08ea9eb0016'
+      - go get -u github.com/stretchr/testify
+      - go get -u github.com/golang/mock/gomock
+      - go get -u github.com/golang/mock/mockgen
+      - go install github.com/golang/mock/mockgen
+      - go get -u github.com/jstemmer/go-junit-report
+      - go get -u google.golang.org/grpc
+      - go get -u github.com/golang/protobuf/protoc-gen-go
+      - go get -u github.com/nilslice/protolock/...
+
+#install PROTO_BUFF on linux
+      - PROTO_BUF_VERSION=2.4.1
+      - wget https://protobuf.googlecode.com/files/protobuf-$PROTO_BUF_VERSION.tar.bz2
+      - tar jxvf protobuf-$PROTO_BUF_VERSION.tar.bz2
+      - cd protobuf-$PROTO_BUF_VERSION
+      - ./configure && make -j4
+      - sudo make install
+      - cd ..
+
+  pre_build: 
+    commands:
+
+      # Ensure code passes all lint tests
+      # - golint -set_exit_status
+
+      # Run all tests included with our application
+      #Run unit test
+      - go test $(go list ./... | grep -v /test/integration) -coverprofile=coverage.out -json > test-report.json
+      # Run integration test
+      - go test test/integration/*_test.go -c -o integration.test
+      - ./integration.test -test.v | go-junit-report > integration-test.xml
+
+  build:
+    commands:
+
+      # Build our application
+      - go build -o main
+
+artifacts:
+  files:
+    - main
+    - appspec.yml
+    - buildspec.yml
+    - codedeploy/*
