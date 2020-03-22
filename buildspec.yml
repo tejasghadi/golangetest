@@ -11,7 +11,15 @@ phases:
       - export PATH=$PATH:/usr/local/go/bin
       - export GOPATH=$HOME/go
       #- export PATH="${HOME}/go/bin:$PATH"
+      - export GOPRIVATE=github.com/idbydna/*
+      - git config --global credential.helper '!aws codecommit credential-helper $@'
+      - git config --global credential.UseHttpPath true
+      - git config --global url."git@github.com:".insteadOf "https://github.com/"
+      - git config --global http.extraheader "PRIVATE-TOKEN:00659582072811a83e5a750f4721e4d8157317cd"
+      - git config --global user.name "servicebridge"
+      - git config --global user.email "aws@idbydna.com"
       - echo "export GIT_TERMINAL_PROMPT=1" >> ~/.bashrc || ~/.zshrc 
+      - go get -u github.com/golang/lint/golint <<< $'00659582072811a83e5a750f4721e4d8157317cd'
       - go get -u github.com/stretchr/testify
       - go get -u github.com/golang/mock/gomock
       - go get -u github.com/golang/mock/mockgen
